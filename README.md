@@ -51,3 +51,7 @@ It uses a special file in the target theme (`assets/deploy_sha.txt`) to speed up
     additional_args: ''
 ```
 <!-- end usage -->
+
+# License
+
+The scripts and documentation in this project are released under the [MIT License](LICENSE)

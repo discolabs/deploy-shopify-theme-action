@@ -1,7 +1,12 @@
-FROM alpine:3.10
+FROM debian:stable-slim
 
-COPY LICENSE README.md /
+RUN apt-get update && \
+    apt-get install -y curl python git && \
+    rm -rf /var/lib/apt/lists/*
 
-COPY entrypoint.sh /entrypoint.sh
+RUN curl -s https://shopify.github.io/themekit/scripts/install.py | python
+
+COPY "entrypoint.sh" "/entrypoint.sh"
+RUN chmod +x /entrypoint.sh
 
 ENTRYPOINT ["/entrypoint.sh"]

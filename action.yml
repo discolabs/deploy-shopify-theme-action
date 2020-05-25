@@ -1,12 +1,25 @@
-name: 'Container Action Template'
-description: 'Get started with Container actions'
-author: 'GitHub'
-inputs: 
-  myInput:
-    description: 'Input to use'
-    default: 'world'
+name: 'Deploy Shopify Theme'
+description: 'Deploy a Shopify theme to a Shopify store using Theme Kit.'
+author: 'Disco Labs'
+inputs:
+  store:
+    description: '*.myshopify.com domain of the Shopify store'
+    required: true
+  password:
+    description: 'Shopify API token or password with theme write access'
+    required: true
+  theme_id:
+    description: 'ID of the theme to deploy to (default: "live")'
+    required: false
+    default: 'live'
+  path:
+    description: 'path to deploy from, relative to the repository root'
+    required: false
+    default: '.'
+  additional_args:
+    description: 'additional arguments to pass to themekit'
+    required: false
+    default: ''
 runs:
   using: 'docker'
   image: 'Dockerfile'
-  args:
-    - ${{ inputs.myInput }}

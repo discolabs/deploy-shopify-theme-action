@@ -23,9 +23,3 @@ inputs:
 runs:
   using: 'docker'
   image: 'Dockerfile'
-  args:
-    - ${{ inputs.store }}
-    - ${{ inputs.password }}
-    - ${{ inputs.theme_id }}
-    - ${{ inputs.path }}
-    - ${{ inputs.additional_args }}

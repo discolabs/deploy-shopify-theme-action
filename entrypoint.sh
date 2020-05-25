@@ -1,3 +1,3 @@
 #!/bin/sh -l
 
-theme deploy --store=$1 --password=$2  --themeid=$3 --dir=$3 $4
+theme deploy --store=$INPUT_STORE --password=$INPUT_PASSWORD  --themeid=$INPUT_THEME_ID --dir=$INPUT_PATH $INPUT_ADDITIONAL_ARGS

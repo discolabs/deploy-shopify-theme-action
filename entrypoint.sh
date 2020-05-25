@@ -17,7 +17,7 @@ if [ ! -z "$LAST_DEPLOY_SHA" ]; then
   echo "---> CHANGED_FILES is $CHANGED_FILES"
 
   # Deploy only those changes, if they exist.
-  if [ ! -z "$LAST_DEPLOY_SHA" ]; then
+  if [ ! -z "$CHANGED_FILES" ]; then
     echo "$CHANGED_FILES" | xargs theme deploy $INPUT_ADDITIONAL_ARGS
   fi
 else

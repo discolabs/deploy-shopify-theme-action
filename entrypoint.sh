@@ -38,10 +38,10 @@ if [ ! -z "$LAST_DEPLOY_SHA" ]; then
   # Get a list of files that have changed in our Shopify theme since the last deploy.
   CHANGED_FILES=$(git diff "$LAST_DEPLOY_SHA..$GITHUB_SHA" --name-only -- $INPUT_PATH/{assets,config,layout,locales,sections,snippets,templates})
 
+  echo "---> Changed theme files since last deploy: ${CHANGED_THEME_FILES:=none}"
+
   if [ ! -z "$CHANGED_FILES" ]; then
     CHANGED_THEME_FILES=$(echo "$CHANGED_FILES" | xargs realpath --relative-to=$INPUT_PATH)
-
-    echo "---> Changed theme files since last deploy: ${CHANGED_THEME_FILES:=none}"
 
     # Deploy only those changes, if they exist.
     if [ ! -z "$CHANGED_THEME_FILES" ]; then

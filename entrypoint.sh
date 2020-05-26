@@ -7,28 +7,58 @@ theme configure --store=$INPUT_STORE --password=$INPUT_PASSWORD  --themeid=$INPU
 theme download assets/deploy_sha.txt || true
 LAST_DEPLOY_SHA=$(cat "$INPUT_PATH/assets/deploy_sha.txt")
 
-echo "---> LAST_DEPLOY_SHA is $LAST_DEPLOY_SHA"
+echo "---> Last deploy SHA is ${LAST_DEPLOY_SHA:=empty}"
+
+# If a custom build command was defined, see if it should be run.
+if [ ! -z "$INPUT_BUILD_COMMAND" ]; then
+  echo "---> Build command detected: $INPUT_BUILD_COMMAND"
+
+  build() {
+    echo "---> Building..."
+    $INPUT_BUILD_COMMAND
+    echo "---> Build completed"
+  }
+
+  if [ ! -z "$LAST_DEPLOY_SHA" ]; then
+    # Get a list of build source files that have changed in our repository since the last deploy.
+    CHANGED_BUILD_FILES=$(git diff "$LAST_DEPLOY_SHA..$GITHUB_SHA" --name-only -- $INPUT_BUILD_PATHSPEC)
+
+    echo "---> Changed build files since last deploy: ${CHANGED_BUILD_FILES:=none}"
+
+    if [ ! -z "$CHANGED_BUILD_FILES" ]; then
+      build
+    fi
+  else
+    build
+  fi
+fi
 
 # Check if we could retrieve a deploy SHA.
 if [ ! -z "$LAST_DEPLOY_SHA" ]; then
   # Get a list of files that have changed in our Shopify theme since the last deploy.
-  CHANGED_FILES=$(git diff "$LAST_DEPLOY_SHA..$GITHUB_SHA" --name-only -- $INPUT_PATH/assets $INPUT_PATH/config $INPUT_PATH/layout $INPUT_PATH/locales $INPUT_PATH/sections $INPUT_PATH/snippets $INPUT_PATH/templates)
+  CHANGED_FILES=$(git diff "$LAST_DEPLOY_SHA..$GITHUB_SHA" --name-only -- $INPUT_PATH/{assets,config,layout,locales,sections,snippets,templates})
 
   if [ ! -z "$CHANGED_FILES" ]; then
-    CHANGED_FILES_RELATIVE=$(echo "$CHANGED_FILES" | xargs realpath --relative-to=$INPUT_PATH)
+    CHANGED_THEME_FILES=$(echo "$CHANGED_FILES" | xargs realpath --relative-to=$INPUT_PATH)
 
-    echo "---> CHANGED_FILES_RELATIVE is $CHANGED_FILES_RELATIVE"
+    echo "---> Changed theme files since last deploy: ${CHANGED_THEME_FILES:=none}"
 
     # Deploy only those changes, if they exist.
-    if [ ! -z "$CHANGED_FILES_RELATIVE" ]; then
-      echo "$CHANGED_FILES_RELATIVE" | xargs theme deploy $INPUT_ADDITIONAL_ARGS
+    if [ ! -z "$CHANGED_THEME_FILES" ]; then
+      echo "---> Deploying only changed files..."
+      echo "$CHANGED_THEME_FILES" | xargs theme deploy $INPUT_ADDITIONAL_ARGS
+      echo "---> Deploy completed"
     fi
   fi
 else
   # Deploy all files.
+  echo "---> Deploying all files..."
   theme deploy $INPUT_ADDITIONAL_ARGS
+  echo "---> Deploy completed"
 fi
 
 # Upload the latest deploy SHA.
+echo "---> Updating last deploy SHA to $GITHUB_SHA..."
 echo $GITHUB_SHA > "$INPUT_PATH/assets/deploy_sha.txt"
 theme deploy assets/deploy_sha.txt
+echo "---> Update completed"

@@ -5,7 +5,7 @@ theme configure --store=$INPUT_STORE --password=$INPUT_PASSWORD  --themeid=$INPU
 
 # Fetch the deploy hash from the theme, if it exists and ignoring a file not found error.
 theme download assets/deploy_sha.txt || true
-LAST_DEPLOY_SHA=$(cat "$INPUT_PATH/assets/deploy_sha.txt")
+LAST_DEPLOY_SHA=$(cat "$INPUT_PATH/assets/deploy_sha.txt" | xargs)
 
 echo "---> Last deploy SHA is ${LAST_DEPLOY_SHA:=empty}"
 

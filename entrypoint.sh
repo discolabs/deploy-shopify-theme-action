@@ -9,9 +9,9 @@ LAST_DEPLOY_SHA=$(cat "$INPUT_PATH/assets/deploy_sha.txt")
 
 echo "---> Last deploy SHA is ${LAST_DEPLOY_SHA:=empty}"
 
-# If a custom build command was defined, see if it should be run.
-if [ ! -z "$INPUT_BUILD_COMMAND" ]; then
-  echo "---> Build command detected: $INPUT_BUILD_COMMAND"
+# If a custom build command and pathspec was defined, see if it should be run.
+if [ ! -z "$INPUT_BUILD_COMMAND" ] && [ ! -z "$INPUT_BUILD_PATHSPEC" ]; then
+  echo "---> Build command detected: $INPUT_BUILD_COMMAND with pathspec $INPUT_BUILD_PATHSPEC"
 
   build() {
     echo "---> Building..."

@@ -20,6 +20,14 @@ inputs:
     description: 'additional arguments to pass to themekit'
     required: false
     default: ''
+  build_command:
+    description: 'build_command'
+    required: false
+    default: ''
+  build_pathspec:
+    description: 'build_pathspec'
+    required: false
+    default: ''
 runs:
   using: 'docker'
   image: 'Dockerfile'

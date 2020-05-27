@@ -21,7 +21,7 @@ if [ ! -z "$INPUT_BUILD_COMMAND" ] && [ ! -z "$INPUT_BUILD_PATHSPEC" ]; then
 
   if [ ! -z "$LAST_DEPLOY_SHA" ]; then
     # Get a list of build source files that have changed in our repository since the last deploy.
-    CHANGED_BUILD_FILES=$(git diff "$LAST_DEPLOY_SHA..$GITHUB_SHA" --name-only -- $INPUT_BUILD_PATHSPEC)
+    CHANGED_BUILD_FILES=$(git diff "$LAST_DEPLOY_SHA..$GITHUB_SHA" --name-only -- $(eval echo $INPUT_BUILD_PATHSPEC))
 
     echo "---> Changed build files since last deploy: ${CHANGED_BUILD_FILES:=none}"
 
